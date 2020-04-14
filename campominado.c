@@ -120,7 +120,7 @@ int main(void)
 
                     if (local[jogada - 1] == 1) //condicao de derrota
                     {
-                        lose = 1;
+                        lose = 1; //perde e sai do loop
 
                         if (vez % 2 == 0)
                         {
