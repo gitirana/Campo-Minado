@@ -59,10 +59,12 @@ int main(void)
                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    int count = 0, i = 0;
     char playagain;
+    int count = 0, i = 0;
     int jogada = 0, vez = 0, k = 0;
     int lose = 0, win = 0, player1 = 0, player2 = 0;
+    int decisao;
+
     do
     {
         count = 1;
@@ -76,21 +78,40 @@ int main(void)
             local[k] = 0;
         }
 
+        //menu de opcoes 
+        printf("\nEscolha seu modo de jogo: \n\n");
+        printf("Solo: digite 1 \n");
+        printf("Multiplayer: digite 2\n");
+        scanf("%d", &decisao);
+
+        //chamando funcao p gerar as bombas
         localBomba(local);
 
         do
-        {
+        {   
+            //limpando menu e iniciando a partida
             printarMapa(local, mapaAberto);
 
-            if (vez % 2 == 0) //pede e memoriza a jogada do 1 jogador
+            //usuario escolheu modo solo
+            if(decisao == 2)
             {
-                printf("Vez do jogador 1: \n");
-                printf("Digite sua jogada (1 - 100)\n");
-                scanf("%d", &jogada);
+                if (vez % 2 == 0) //pede e memoriza a jogada do 1 jogador
+                {
+                    printf("Vez do jogador 1: \n");
+                    printf("Digite sua jogada (1 - 100)\n");
+                    scanf("%d", &jogada);
+                }
+                else
+                {
+                    printf("Vez do jogador 2: \n"); //pede e memoriza a jogada do 2 jogador
+                    printf("Digite sua jogada (1 - 100)\n");
+                    scanf("%d", &jogada);
+                }
             }
-            else
+
+            //usuario escolheu modo multiplayer
+            if(decisao == 1)
             {
-                printf("Vez do jogador 2: \n"); //pede e memoriza a jogada do 2 jogador
                 printf("Digite sua jogada (1 - 100)\n");
                 scanf("%d", &jogada);
             }
@@ -122,13 +143,17 @@ int main(void)
                     {
                         lose = 1; //perde e sai do loop
 
-                        if (vez % 2 == 0)
-                        {
-                            player1 = 1;
-                        }
-                        else
-                        {
-                            player2 = 1;
+                        if(decisao == 2)
+                        {   
+                            //verifica qual jogador perdeu
+                            if (vez % 2 == 0)
+                            {
+                                player1 = 1;
+                            }
+                            else
+                            {
+                                player2 = 1;
+                            }
                         }
                     }
 
@@ -136,49 +161,68 @@ int main(void)
                     {
                         win = 1;
 
-                        if (vez % 2 == 0)
+                        //verifica qual jogador ganhou
+                        if(decisao == 2)
                         {
-                            player1 = 1;
-                        }
-                        else
-                        {
-                            player2 = 1;
+                            if (vez % 2 == 0)
+                            {
+                                player1 = 1;
+                            }
+                            else
+                            {
+                                player2 = 1;
+                            }
                         }
                     }
 
-                    printarMapa(local, mapaAberto);
+                    printarMapa(local, mapaAberto); //chama mapa pra mostrar a ultima jogada
 
                     count++; //qntd de rodadas
-                    vez++;
+                    vez++; //passa a vez
                 }
             }
 
         }while(lose == 0 && win == 0);
 
         if (lose == 1)
-        {
+        {   
+            //mostra pro usuario quem perdeu
             if (player1 == 1)
             {
                 printf("Jogador 1 perdeu!\n");
             }
-            else
+
+            if(player2 == 1)
             {
                 printf("Jogador 2 perdeu!\n");
+            }
+
+            if(decisao == 1)
+            {
+                printf("Voce perdeu!\n");
             }
         }
         
         if(win == 1)
-        {
+        {   
+            //mostra pro usuario quem ganhou
             if (player1 == 1)
             {
                 printf("Jogador 1 ganhou!\n");
             }
-            else
+            
+            if(player2 == 1)
             {
                 printf("Jogador 2 ganhou!\n");
             }
+
+            if(decisao == 1)
+            {
+                printf("Voce ganhou!\n");
+            }
         }
 
+        //pergunta pro usuario se quer comecar nova partida
         printf("Deseja jogar novamente?\n");
         scanf("%s", &playagain);
 
