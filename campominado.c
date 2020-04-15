@@ -65,6 +65,7 @@ int main(void)
     int jogada = 0, vez = 0, k = 0;
     int lose = 0, win = 0, player1 = 0, player2 = 0;
     int decisao;
+    clock_t t = 0, tAnterior = 0;
 
     do
     {
@@ -72,6 +73,8 @@ int main(void)
         lose = 0;
         win = 0;
         vez = 0;
+
+        t = t - tAnterior;
 
         for (k = 0; k < 100; k++) //zera o vetor depois de comecar um novo jogo
         {
@@ -88,6 +91,7 @@ int main(void)
 
         //chamando funcao p gerar as bombas
         localBomba(local);
+
 
         do
         {   
@@ -114,6 +118,11 @@ int main(void)
                 if(decisao == 3 && vez % 2 != 0)
                 {
                     jogada = jogadaBOT(local, mapaAberto);
+                }
+
+                if(decisao == 3)
+                {
+                    t = (t + clock());
                 }
             }
 
@@ -228,6 +237,8 @@ int main(void)
 
             if(decisao == 3)
             {
+                printf("Voce sobreviveu por: %.2f segundos\n\n", ((float)t) / 10000);
+                
                 if(player1 == 1)
                 {
                     printf("A revolucao das maquinas esta perto. Voce perdeu!\n");
@@ -262,13 +273,14 @@ int main(void)
 
             if(decisao == 3)
             {
+                printf("Voce sobreviveu por: %.2f segundos\n\n", ((float)t) / 10000);
                 if(player2 == 1)
                 {
                     printf("O BOT ganhou!\n");
                 }
                 else
                 {
-                    printf("Voce ganhou das maquinas!\n");
+                    printf("Voce ganhou da maquina!\n");
                 }
                 
             }
@@ -277,6 +289,8 @@ int main(void)
         //pergunta pro usuario se quer comecar nova partida
         printf("Deseja jogar novamente?\n");
         scanf("%s", &playagain);
+
+        tAnterior = t;
 
     } while (playagain == 's');
 
@@ -305,7 +319,7 @@ void localBomba(int local[100]) //funcao para gerar as bombas
 int jogadaBOT(int local[100], int mapaAberto[100]) // funcao pra gerar a jogada do bot
 {
     int jogada;
-    int x;
+    int flag;
     
     do
     {   
@@ -317,16 +331,16 @@ int jogadaBOT(int local[100], int mapaAberto[100]) // funcao pra gerar a jogada 
         {
             if(local[jogada - 1] == 0)
             {
-                x = 1;
+                flag = 1;
             }
         }
 
         if(local[jogada - 1] == 1)
         {
-            x = 0;
+            flag = 0;
         }
 
-    }while(x == 0);
+    }while(flag == 0);
 
 
     return jogada;
