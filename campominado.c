@@ -5,6 +5,7 @@
 #include <windows.h>
 
 void localBomba(int local[100]);
+int jogadaBOT(int local[100], int mapaAberto[100]);
 
 void printarMapa(int local[100], int mapaAberto[100])
 {
@@ -82,6 +83,7 @@ int main(void)
         printf("\nEscolha seu modo de jogo: \n\n");
         printf("Solo: digite 1 \n");
         printf("Multiplayer: digite 2\n");
+        printf("Contra BOT: digite 3\n");
         scanf("%d", &decisao);
 
         //chamando funcao p gerar as bombas
@@ -93,7 +95,7 @@ int main(void)
             printarMapa(local, mapaAberto);
 
             //usuario escolheu modo solo
-            if(decisao == 2)
+            if(decisao == 2 || decisao == 3)
             {
                 if (vez % 2 == 0) //pede e memoriza a jogada do 1 jogador
                 {
@@ -101,11 +103,17 @@ int main(void)
                     printf("Digite sua jogada (1 - 100)\n");
                     scanf("%d", &jogada);
                 }
-                else
+                
+                if(decisao == 2 && vez % 2 != 0)
                 {
                     printf("Vez do jogador 2: \n"); //pede e memoriza a jogada do 2 jogador
                     printf("Digite sua jogada (1 - 100)\n");
                     scanf("%d", &jogada);
+                }
+
+                if(decisao == 3 && vez % 2 != 0)
+                {
+                    jogada = jogadaBOT(local, mapaAberto);
                 }
             }
 
@@ -123,7 +131,7 @@ int main(void)
 
                 printf("Jogada invalida. Coloque um numero entre 1 e 100\n");
 
-                Sleep(2000);
+                Sleep(1500);
             }
             else
             {
@@ -133,7 +141,7 @@ int main(void)
 
                     printf("Jogada invalida. Escolha um campo fechado\n");
 
-                    Sleep(2000);
+                    Sleep(1500);
                 }
                 else
                 {
@@ -141,8 +149,6 @@ int main(void)
 
                     if (local[jogada - 1] == 1) //condicao de derrota
                     {
-                        lose = 1; //perde e sai do loop
-
                         if(decisao == 2)
                         {   
                             //verifica qual jogador perdeu
@@ -155,6 +161,16 @@ int main(void)
                                 player2 = 1;
                             }
                         }
+
+                        if(decisao == 3)
+                        {
+                            if(vez % 2 == 0)
+                            {
+                                player1 = 1;
+                            }
+                        }
+
+                        lose = 1; //perde e sai do loop
                     }
 
                     if(count == 80 && lose == 0)
@@ -173,6 +189,11 @@ int main(void)
                                 player2 = 1;
                             }
                         }
+
+                        if(decisao == 3)
+                        {
+                            player2 == 1;
+                        }
                     }
 
                     printarMapa(local, mapaAberto); //chama mapa pra mostrar a ultima jogada
@@ -187,38 +208,69 @@ int main(void)
         if (lose == 1)
         {   
             //mostra pro usuario quem perdeu
-            if (player1 == 1)
+            if(decisao == 2)
             {
-                printf("Jogador 1 perdeu!\n");
-            }
+                if (player1 == 1)
+                {
+                    printf("Jogador 1 perdeu!\n");
+                }
 
-            if(player2 == 1)
-            {
-                printf("Jogador 2 perdeu!\n");
+                if(player2 == 1)
+                {
+                    printf("Jogador 2 perdeu!\n");
+                }
             }
 
             if(decisao == 1)
             {
                 printf("Voce perdeu!\n");
             }
+
+            if(decisao == 3)
+            {
+                if(player1 == 1)
+                {
+                    printf("A revolucao das maquinas esta perto. Voce perdeu!\n");
+                }
+                else
+                {
+                    printf("O BOT perdeu!\n");
+                }
+            }
         }
         
         if(win == 1)
         {   
             //mostra pro usuario quem ganhou
-            if (player1 == 1)
+            if(decisao == 2)
             {
-                printf("Jogador 1 ganhou!\n");
+                if (player1 == 1)
+                {
+                    printf("Jogador 1 ganhou!\n");
+                }
+                
+                if(player2 == 1)
+                {
+                    printf("Jogador 2 ganhou!\n");
+                }
             }
             
-            if(player2 == 1)
-            {
-                printf("Jogador 2 ganhou!\n");
-            }
-
             if(decisao == 1)
             {
                 printf("Voce ganhou!\n");
+            }
+
+            if(decisao == 3)
+            {
+                if(player2 == 1)
+                {
+                    printf("O BOT ganhou!\n");
+                }
+                else
+                {
+                    printf("Voce ganhou das maquinas!\n");
+                }
+                
             }
         }
 
@@ -248,4 +300,34 @@ void localBomba(int local[100]) //funcao para gerar as bombas
             numBomba++;
         }
     }
+}
+
+int jogadaBOT(int local[100], int mapaAberto[100]) // funcao pra gerar a jogada do bot
+{
+    int jogada;
+    int x;
+    
+    do
+    {   
+        srand((unsigned)time(NULL));
+
+        jogada = 1 + rand() % 100;
+
+        if(mapaAberto[jogada - 1] == 0)
+        {
+            if(local[jogada - 1] == 0)
+            {
+                x = 1;
+            }
+        }
+
+        if(local[jogada - 1] == 1)
+        {
+            x = 0;
+        }
+
+    }while(x == 0);
+
+
+    return jogada;
 }
